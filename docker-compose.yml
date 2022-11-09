@@ -1,0 +1,54 @@
+version: '3'
+services:
+  frontend_rdp:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./frontend/.env
+    container_name: frontend_rdp
+    restart: always
+    expose:
+      - "3000"
+    depends_on:
+      - backend_rdp
+    ports:
+      - "3000:3000"
+    networks:
+      - rdpnetwork
+  backend_rdp:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    container_name: backend_rdp
+    restart: always
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database_rdp
+    links:
+      - database_rdp:database_rdp
+    networks:
+      - rdpnetwork
+  database_rdp:
+    image: postgres:13.0-alpine
+    env_file: 
+      - ./database/.env
+    container_name: database_rdp
+    restart: always
+    expose:
+      - "9000"
+    ports:
+      - "9000:5432"
+    networks:
+      - rdpnetwork
+    volumes:
+      - ./database/data:/var/lib/postgresql/data
+
+networks:
+  rdpnetwork:
+    driver: bridge

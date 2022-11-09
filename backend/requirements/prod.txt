@@ -1,0 +1,4 @@
+-r common.txt
+django-templated-mail==1.1.1
+djangorestframework-simplejwt==5.2.2
+PyJWT==2.6.0
